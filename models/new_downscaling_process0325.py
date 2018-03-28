@@ -216,14 +216,14 @@ with graph.as_default():
         print(t1)
         if CONTINUED == 1:
             print('read CONTINUED netVal')
-            Wconv1_x1 = np.fromfile('D:netVals/AlexNet_W_conv1_x1_'+name+'.dat',float32).reshape(7,7,1,48)
-            Bconv1_x1 = np.fromfile('D:netVals/AlexNet_b_conv1_x1_'+name+'.dat',float32).reshape(48)
-            Wconv2_x1 = np.fromfile('D:netVals/AlexNet_W_conv2_x1_'+name+'.dat',float32).reshape(5,5,48,64)
-            Bconv2_x1 = np.fromfile('D:netVals/AlexNet_b_conv2_x1_'+name+'.dat',float32).reshape(64)
-            Wfc1_x1 = np.fromfile('D:netVals/AlexNet_W_fc1_x1_'+name+'.dat',float32).reshape(8*5*64,1024)
-            Bfc1_x1 = np.fromfile('D:netVals/AlexNet_b_fc1_x1_'+name+'.dat',float32).reshape(1024)
-            Wfc2 = np.fromfile('D:netVals/AlexNet_W_fc2_x1_'+name+'.dat',float32).reshape(1024,WRF_LENGTH)
-            Bfc2 = np.fromfile('D:netVals/AlexNet_b_fc2_x1_'+name+'.dat',float32).reshape(WRF_LENGTH)
+            Wconv1_x1 = np.fromfile('D:netVals/ConvNet_W_conv1_x1_'+name+'.dat',float32).reshape(7,7,1,48)
+            Bconv1_x1 = np.fromfile('D:netVals/ConvNet_b_conv1_x1_'+name+'.dat',float32).reshape(48)
+            Wconv2_x1 = np.fromfile('D:netVals/ConvNet_W_conv2_x1_'+name+'.dat',float32).reshape(5,5,48,64)
+            Bconv2_x1 = np.fromfile('D:netVals/ConvNet_b_conv2_x1_'+name+'.dat',float32).reshape(64)
+            Wfc1_x1 = np.fromfile('D:netVals/ConvNet_W_fc1_x1_'+name+'.dat',float32).reshape(8*5*64,1024)
+            Bfc1_x1 = np.fromfile('D:netVals/ConvNet_b_fc1_x1_'+name+'.dat',float32).reshape(1024)
+            Wfc2 = np.fromfile('D:netVals/ConvNet_W_fc2_x1_'+name+'.dat',float32).reshape(1024,WRF_LENGTH)
+            Bfc2 = np.fromfile('D:netVals/ConvNet_b_fc2_x1_'+name+'.dat',float32).reshape(WRF_LENGTH)
             print('done')
             print('assinging value')
             sess.run(set_wconv1_x1, feed_dict={wconv1_x1: Wconv1_x1})
@@ -272,7 +272,7 @@ with graph.as_default():
             mse[0,i] = ss
             mse[1,i] = tStart - tEnd
             print('saving output')
-            result[0].astype(float32).tofile('D:data/output/ERAItoWRF_DS_AlexNet_standardized_'+str(TIME_STEP)+'step_train_'+name+'_%02d'%i+'.dat')
+            result[0].astype(float32).tofile('D:data/output/ERAItoWRF_DS_ConvNet_standardized_'+str(TIME_STEP)+'step_train_'+name+'_%02d'%i+'.dat')
     
         print('done')
         print('rmse for all train data is...')
@@ -298,7 +298,7 @@ with graph.as_default():
             result = sess.run(x_out, feed_dict={x1:batch_erai})
             output[tStart:tEnd,:] = result[0]
         #print('writing output')
-        #output.astype(float32).tofile('D:ERAItoWRF_DS_AlexNet_standatdized'+str(TIME_STEP)+'step_test_'+name+'.dat')
+        #output.astype(float32).tofile('D:ERAItoWRF_DS_ConvNet_standatdized'+str(TIME_STEP)+'step_test_'+name+'.dat')
     
         
         print('calculating mse')
@@ -353,7 +353,6 @@ with graph.as_default():
 #                result = sess.run([x1,y,x1_image, h_conv1_x1, h_pool1_x1, h_conv2_x1,h_pool2_x1, h_pool2_flat_x1], feed_dict={x1:batch_erai, y:batch_wrf})
 #                for i in range(8):
 #                    print(result[i].shape)
-
                 result = sess.run([loss],feed_dict={x1:batch_erai, y:batch_wrf})
                 print('After_Net: Mean Squared Error ='+str(result[0]) )
             save_csv[i,0] = result[0]
@@ -362,7 +361,7 @@ with graph.as_default():
             #saving
             if (i+1)%100 == 0:
                 print("saving start")
-                f = open('D:output/GSMaPtoCBAND_100mini_AlexNet_standardized_15000step_gsmapOnly_new_data.csv','w')
+                f = open('D:output/ERAItoWRF_ConvNet_standardized_15000step_erai_new.csv','w')
                 writer = csv.writer(f, lineterminator='\n')
                 if REGULARIZATION == 1:
                     for j in range(i+1):
@@ -378,20 +377,20 @@ with graph.as_default():
                 SAVE_NETVAL = 1
                 if SAVE_NETVAL == 1:
                     netVals = sess.run([ W_conv1_x1,b_conv1_x1,W_conv2_x1,b_conv2_x1,  W_fc1_x1,b_fc1_x1, W_fc2, b_fc2])
-                    netVals[0].astype(float32).tofile('D:netVals/AlexNet_W_conv1_x1_'+name+'.dat')
-                    netVals[1].astype(float32).tofile('D:netVals/AlexNet_b_conv1_x1_'+name+'.dat')
-                    netVals[2].astype(float32).tofile('D:netVals/AlexNet_W_conv2_x1_'+name+'.dat')
-                    netVals[3].astype(float32).tofile('D:netVals/AlexNet_b_conv2_x1_'+name+'.dat')
-                    netVals[4].astype(float32).tofile('D:netVals/AlexNet_W_fc1_x1_'+name+'.dat')
-                    netVals[5].astype(float32).tofile('D:netVals/AlexNet_b_fc1_x1_'+name+'.dat')
-                    netVals[6].astype(float32).tofile('D:netVals/AlexNet_W_fc2_x1_'+name+'.dat')
-                    netVals[7].astype(float32).tofile('D:netVals/AlexNet_b_fc2_x1_'+name+'.dat')
+                    netVals[0].astype(float32).tofile('D:netVals/ConvNet_W_conv1_x1_'+name+'.dat')
+                    netVals[1].astype(float32).tofile('D:netVals/ConvNet_b_conv1_x1_'+name+'.dat')
+                    netVals[2].astype(float32).tofile('D:netVals/ConvNet_W_conv2_x1_'+name+'.dat')
+                    netVals[3].astype(float32).tofile('D:netVals/ConvNet_b_conv2_x1_'+name+'.dat')
+                    netVals[4].astype(float32).tofile('D:netVals/ConvNet_W_fc1_x1_'+name+'.dat')
+                    netVals[5].astype(float32).tofile('D:netVals/ConvNet_b_fc1_x1_'+name+'.dat')
+                    netVals[6].astype(float32).tofile('D:netVals/ConvNet_W_fc2_x1_'+name+'.dat')
+                    netVals[7].astype(float32).tofile('D:netVals/ConvNet_b_fc2_x1_'+name+'.dat')
     IMAGE_OUTPUT = 1
     if IMAGE_OUTPUT == 1:
         output = sess.run([x1,x_out,y,], feed_dict={x1:batch_erai, y:batch_wrf})
-        output[0].astype(float32).tofile('D:output/AlexNet_erai_input.dat')
-        output[1].astype(float32).tofile('D:output/AlexNet_dplg_output.dat')
-        output[2].astype(float32).tofile('D:output/AlexNet_wrf_output.dat')
+        output[0].astype(float32).tofile('D:output/ConvNet_erai_input.dat')
+        output[1].astype(float32).tofile('D:output/ConvNet_dplg_output.dat')
+        output[2].astype(float32).tofile('D:output/ConvNet_wrf_output.dat')
         print('Finish IMAGE_OUTPUT')
     
     t2 = datetime.now()

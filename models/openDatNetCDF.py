@@ -12,12 +12,12 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import ImageGrid
 import numpy as np
 import pandas as pd
-import netCDF4
 from mpl_toolkits.basemap import Basemap
-from netCDF4 import Dataset
 import numpy as np
 import nco
 from numpy import *
+#import netCDF4
+#from netCDF4 import Dataset
 
 #just want to open netcdf file
 file=xr.open_dataset('D:newMMHC12K-DLY.nc')
