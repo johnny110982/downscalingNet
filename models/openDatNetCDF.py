@@ -24,8 +24,8 @@ file=xr.open_dataset('D:newMMHC12K-DLY.nc')
 file
 
 #open dat file
-file = np.fromfile('D:output/AlexNet_erai_input.dat')
-file
+file = np.fromfile('D:output/ConvNet_wrf_output.dat')
+file.shape
 
 #take part of netcdf data and convert to new ssubset file
 file=xr.open_dataset('D:newMMHC12K-DLY.nc')
