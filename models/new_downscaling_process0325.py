@@ -16,9 +16,9 @@ from numpy import *
 from datetime import datetime
 
 #define static variables
-TIME_STEP = 100
+TIME_STEP = 300
 DOWNSCALING = 0
-SAVE_NETVAL = 0
+SAVE_NETVAL = 1
 READ_netVal = 1
 CONTINUED = 1
 
@@ -61,7 +61,7 @@ def max_pool_3x3(x):
 
 def next_batch(erai, wrf):
     print('next_batch...')
-    n=146
+    n=3651
     samples=np.random.randint(0,erai.shape[0],n)
     batch_erai = erai[samples]
     batch_wrf = wrf[samples]
@@ -297,6 +297,37 @@ with graph.as_default():
     else:
         save_csv = np.zeros((TIME_STEP,1))    
     
+    
+    if READ_netVal == 1:
+        print('read netVals')
+        t1 = datetime.now()
+        print(t1)
+        if CONTINUED == 1:
+            print('read CONTINUED netVal')
+            Wconv1_x1 = np.fromfile('D:netVals/ConvNet_W_conv1_x1_'+name+'.dat',float32).reshape(7,7,1,48)
+            Bconv1_x1 = np.fromfile('D:netVals/ConvNet_b_conv1_x1_'+name+'.dat',float32).reshape(48)
+            Wconv2_x1 = np.fromfile('D:netVals/ConvNet_W_conv2_x1_'+name+'.dat',float32).reshape(5,5,48,64)
+            Bconv2_x1 = np.fromfile('D:netVals/ConvNet_b_conv2_x1_'+name+'.dat',float32).reshape(64)
+            Wfc1_x1 = np.fromfile('D:netVals/ConvNet_W_fc1_x1_'+name+'.dat',float32).reshape(8*5*64,1024)
+            Bfc1_x1 = np.fromfile('D:netVals/ConvNet_b_fc1_x1_'+name+'.dat',float32).reshape(1024)
+            Wfc2 = np.fromfile('D:netVals/ConvNet_W_fc2_x1_'+name+'.dat',float32).reshape(1024,WRF_LENGTH)
+            Bfc2 = np.fromfile('D:netVals/ConvNet_b_fc2_x1_'+name+'.dat',float32).reshape(WRF_LENGTH)
+            print('done')
+            print('assinging value')
+            sess.run(set_wconv1_x1, feed_dict={wconv1_x1: Wconv1_x1})
+            sess.run(set_bconv1_x1, feed_dict={bconv1_x1: Bconv1_x1})
+            sess.run(set_wconv2_x1, feed_dict={wconv2_x1: Wconv2_x1})
+            sess.run(set_bconv2_x1, feed_dict={bconv2_x1: Bconv2_x1})
+            sess.run(set_wfc1_x1, feed_dict={wfc1_x1: Wfc1_x1})
+            sess.run(set_bfc1_x1, feed_dict={bfc1_x1: Bfc1_x1})
+            sess.run(set_wfc2, feed_dict={wfc2: Wfc2})
+            sess.run(set_bfc2, feed_dict={bfc2: Bfc2})
+            print('done')
+            t2 = datetime.now()
+            print(t2)
+            print('The time is ')
+            print(t2-t1)
+    
     #train loop
     if DOWNSCALING == 0:
         print('start training')
@@ -357,35 +388,7 @@ with graph.as_default():
                     netVals[7].astype(float32).tofile('D:netVals/ConvNet_b_fc2_x1_'+name+'.dat')
                 print('netVal saving done')
     
-    if READ_netVal == 1:
-        print('read netVals')
-        t1 = datetime.now()
-        print(t1)
-        if CONTINUED == 1:
-            print('read CONTINUED netVal')
-            Wconv1_x1 = np.fromfile('D:netVals/ConvNet_W_conv1_x1_'+name+'.dat',float32).reshape(7,7,1,48)
-            Bconv1_x1 = np.fromfile('D:netVals/ConvNet_b_conv1_x1_'+name+'.dat',float32).reshape(48)
-            Wconv2_x1 = np.fromfile('D:netVals/ConvNet_W_conv2_x1_'+name+'.dat',float32).reshape(5,5,48,64)
-            Bconv2_x1 = np.fromfile('D:netVals/ConvNet_b_conv2_x1_'+name+'.dat',float32).reshape(64)
-            Wfc1_x1 = np.fromfile('D:netVals/ConvNet_W_fc1_x1_'+name+'.dat',float32).reshape(8*5*64,1024)
-            Bfc1_x1 = np.fromfile('D:netVals/ConvNet_b_fc1_x1_'+name+'.dat',float32).reshape(1024)
-            Wfc2 = np.fromfile('D:netVals/ConvNet_W_fc2_x1_'+name+'.dat',float32).reshape(1024,WRF_LENGTH)
-            Bfc2 = np.fromfile('D:netVals/ConvNet_b_fc2_x1_'+name+'.dat',float32).reshape(WRF_LENGTH)
-            print('done')
-            print('assinging value')
-            sess.run(set_wconv1_x1, feed_dict={wconv1_x1: Wconv1_x1})
-            sess.run(set_bconv1_x1, feed_dict={bconv1_x1: Bconv1_x1})
-            sess.run(set_wconv2_x1, feed_dict={wconv2_x1: Wconv2_x1})
-            sess.run(set_bconv2_x1, feed_dict={bconv2_x1: Bconv2_x1})
-            sess.run(set_wfc1_x1, feed_dict={wfc1_x1: Wfc1_x1})
-            sess.run(set_bfc1_x1, feed_dict={bfc1_x1: Bfc1_x1})
-            sess.run(set_wfc2, feed_dict={wfc2: Wfc2})
-            sess.run(set_bfc2, feed_dict={bfc2: Bfc2})
-            print('done')
-            t2 = datetime.now()
-            print(t2)
-            print('The time is ')
-            print(t2-t1)
+    
             
     IMAGE_OUTPUT = 1
     if IMAGE_OUTPUT == 1:
