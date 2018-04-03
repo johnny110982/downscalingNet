@@ -16,7 +16,7 @@ from numpy import *
 from datetime import datetime
 
 #define static variables
-TIME_STEP = 300
+TIME_STEP = 30000
 DOWNSCALING = 0
 SAVE_NETVAL = 1
 READ_netVal = 1
@@ -61,7 +61,7 @@ def max_pool_3x3(x):
 
 def next_batch(erai, wrf):
     print('next_batch...')
-    n=3651
+    n=200
     samples=np.random.randint(0,erai.shape[0],n)
     batch_erai = erai[samples]
     batch_wrf = wrf[samples]
