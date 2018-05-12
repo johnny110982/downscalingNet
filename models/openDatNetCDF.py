@@ -20,11 +20,11 @@ from numpy import *
 #from netCDF4 import Dataset
 
 #just want to open netcdf file
-file=xr.open_dataset('D:newMMHC12K-DLY.nc')
+file=xr.open_dataset('D:TRMM_monthly/TRMM3B43-MON.nc')
 file
 
 #open dat file
-file = np.fromfile('D:output/ConvNet_wrf_output.dat')
+file = np.fromfile('D:TRMM_monthly/TRMM3B43-MON.dat')
 file.shape
 
 #take part of netcdf data and convert to new ssubset file
