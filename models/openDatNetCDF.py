@@ -20,7 +20,7 @@ from numpy import *
 #from netCDF4 import Dataset
 
 #just want to open netcdf file
-file=xr.open_dataset('D:TRMM_monthly/TRMM3B43-MON.nc')
+file=xr.open_dataset('D:TRMM_monthly/testTRMM2008to2017.nc')
 file
 
 #open dat file
@@ -28,10 +28,10 @@ file = np.fromfile('D:TRMM_monthly/TRMM3B43-MON.dat')
 file.shape
 
 #take part of netcdf data and convert to new ssubset file
-file=xr.open_dataset('D:newMMHC12K-DLY.nc')
-train = file.incrain[3653:7304,:,:]
+file=xr.open_dataset('D:TRMM_monthly/TRMM3B43-MON.nc')
+train = file.precip[120:239,:,:]
 train
-train.to_netcdf('D:testWRF2005to2015.nc')
+train.to_netcdf('D:TRMM_monthly/testTRMM2008to2017.nc')
 
 #plot
 file=xr.open_dataset('D:newMMHC12K-DLY.nc')

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Sep 19 14:20:14 2017
+Created on Sat May 12 14:05:23 2018
 
 @author: chang
+
+TRMM version
 """
+
 
 import tensorflow as tf
 import csv
@@ -16,7 +19,7 @@ from numpy import *
 from datetime import datetime
 
 #define static variables
-TIME_STEP = 50000
+TIME_STEP = 100
 DOWNSCALING = 1
 SAVE_NETVAL = 0
 READ_netVal = 1
@@ -27,13 +30,13 @@ WEIGHT_INITIAL = 1e-4
 REGULARIZATION = 0
 COMPARE_THE_INPUTS = False
 
-ERAI_SHAPE = [29,17]
+ERAI_SHAPE = [90,58]
 ERAI_LENGTH = ERAI_SHAPE[0]*ERAI_SHAPE[1]
 
 WRF_SHAPE = [199,119]
 WRF_LENGTH = WRF_SHAPE[0]*WRF_SHAPE[1]
 
-name = 'erai_NewData'
+name = 'trmm_NewData'
 
 print('--------------setting--------------')
 print('TIME_STEP = ' + str(TIME_STEP))
@@ -83,9 +86,9 @@ def next_batch(erai, wrf):
 
 
 #read training data
-print('reading train erai')
-ds = xr.open_dataset('D:trainERAI1995to2005.nc')
-er = ds.tp
+print('reading train trmm')
+ds = xr.open_dataset('D:TRMM_monthly/trainTRMM1998to2007.nc')
+er = ds.precip
 erai_train = np.array(er).reshape(-1,ERAI_LENGTH)
 #erai_train = erai_train.reshape(-1,2, ERAI_LENGTH)
 #erai_train = np.mean(erai_train, axis=1)
